@@ -1,16 +1,20 @@
 from . import GENRE, YEAR, COUNTRY
 from clients.parse_choices import ChoicesClient
+from clients.orchestrator import Orchestrator
+
 
 import PySimpleGUI as sg
 
 
 def main():
     raw_choices = get_user_choices()
-    clean_choices = ChoicesClient(raw_choices).cleaned_choices
-    # JARSClient(**clean_choices)
+    Orchestrator(raw_choices).run()
 
 
 def get_user_choices():
+    """
+    :return: Dictionary of user's input choices {'country': 'England', 'genre': 'techno', ...}
+    """
 
     CANCEL = 'cancel'
 
