@@ -1,6 +1,6 @@
-from . import GENRE, YEAR, COUNTRY
-from clients.parse_choices import ChoicesClient
-from clients.orchestrator import Orchestrator
+from JARS import GENRE, YEAR, COUNTRY
+from JARS.clients.parse_choices import ChoicesClient
+from JARS.clients.orchestrator import Orchestrator
 
 
 import PySimpleGUI as sg

@@ -1,41 +1,71 @@
-from .. import YEAR, COUNTRY, GENRE
+from JARS import YEAR, COUNTRY, GENRE
 
+from collections import defaultdict
 import os
 import yaml
 
-class ChoicesClient:
 
-    def __init__(self, raw_choices):
+class ChoicesClient:
+    def __init__(self, conf_filepath):
         """
         :param raw_choices: Dictionary of raw-text choices provided by user
         """
 
-        MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
-        CONF_FILE_NAME = os.path.join(MODULE_PATH, os.pardir, 'conf', 'discogs.yml')
+        self.config = self.load_config(conf_filepath)
+        self.valid_genres = self.parse_genres_styles(self.config)['genres']
+        self.valid_styles = self.parse_genres_styles(self.config)['styles']
 
-        self.raw_choices = raw_choices
-        self.config = self.load_config(CONF_FILE_NAME)
-        self.valid_genres = self.load_valid_genres()
-        self.valid_styles = self.load_valid_styles()
+    def process_choices(self, raw_choices):
+        """
+        :return: Dictionary of user choices mapped to correct keys for discogs API
+                { 'style': 'grunge', 'year': 2000, 'country': 'England' }
+        """
 
+        cleaned_choices = {}
+        cleaned_genres_styles = self.map_choice_genre_style(raw_choices[GENRE])
 
-    # Below will include the parsing of multiple genres/typos etc.
+        cleaned_choices.update(cleaned_genres_styles)
 
-    @property
-    def cleaned_choices(self):
-        return self.raw_choices
+        return self.cleaned_choices
 
-    @property
-    def valid_genres(self):
-        return self.valid_genres
+    def map_choice_genre_style(self, raw_genre_choices):
+        """
+        :param raw_genre_choices: "rock,pop,grunge"
+        :return:
+        """
+        mapped_choices = defaultdict(list)
 
-    @property
-    def valid_styles(self):
-        return self.valid_styles
+        if not raw_genre_choices:
+            return {}
+
+        cleaned_choices = [genre.strip().capitalize() for genre in raw_genre_choices.split(',')]
+
+        for cleaned_choice in cleaned_choices:
+
+            if cleaned_choice in self.valid_genres:
+                mapped_choices['genre'].append(cleaned_choice)
+            elif cleaned_choice in self.valid_styles:
+                mapped_choices['style'].append(cleaned_choice)
+            else:
+                mapped_choices['unmatched'].append(cleaned_choice)
+
+        return mapped_choices
 
     @staticmethod
-    def load_valid_genres(conf):
-        pass
+    def parse_genres_styles(conf):
+        """
+        Due to hierarchical nature of Genres and Styles these are processed together
+        :param conf: Dictionary of config
+        :return: Dictionary of valid genres and styles { 'genres': [], 'styles': [] }
+        """
+        valid_genres = []
+        valid_styles = []
+        music_conf = conf['genres-styles']
+        for genre, styles in music_conf.items():
+            valid_genres.append(genre)
+            valid_styles.extend(styles)
+
+        return {'genres': valid_genres, 'styles': valid_styles}
 
     @staticmethod
     def load_config(full_conf_filepath):

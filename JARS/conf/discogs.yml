@@ -1,7 +1,7 @@
 sort_options:
   - most_recent
 
-genres:
+genres-styles:
   Blues:
   - Boogie Woogie
   - Chicago Blues
@@ -52,7 +52,7 @@ genres:
   - Dub Techno
   - Dubstep
   - Dungeon Synth
-  - EBM
+  - Ebm
   - Electro
   - Electro House
   - Electroclash
@@ -429,3 +429,6 @@ genres:
   - Twist
   - Viking Metal
   - Yé-Yé
+
+countries:
+  - England
