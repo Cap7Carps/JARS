@@ -51,7 +51,7 @@ class TestChoicesClient:
     def test_parse_genres_styles(self):
 
         config = {'genres-styles': {'Rock': ['Grunge', 'Punk'], 'Electronic': ['Techno', 'Gabba']}}
-        parsed_config = self.dummy_client.parse_genres_styles(config)
+        parsed_config = self.dummy_client._parse_genres_styles(config)
         expected = {'genres': ['Rock', 'Electronic'], 'styles': ['Grunge', 'Punk', 'Techno', 'Gabba']}
 
         assert parsed_config == expected

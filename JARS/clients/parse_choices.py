@@ -31,7 +31,7 @@ class ChoicesClient:
     def map_choice_genre_style(self, raw_genre_choices):
         """
         :param raw_genre_choices: "rock,pop,grunge"
-        :return:
+        :return: {'genre': ['rock'], 'style': ['pop', 'grunge'] }
         """
         mapped_choices = defaultdict(list)
 
@@ -51,8 +51,7 @@ class ChoicesClient:
 
         return mapped_choices
 
-    @staticmethod
-    def parse_genres_styles(conf):
+    def _parse_genres_styles_from_config(self):
         """
         Due to hierarchical nature of Genres and Styles these are processed together
         :param conf: Dictionary of config
@@ -60,7 +59,7 @@ class ChoicesClient:
         """
         valid_genres = []
         valid_styles = []
-        music_conf = conf['genres-styles']
+        music_conf = self.config['genres-styles']
         for genre, styles in music_conf.items():
             valid_genres.append(genre)
             valid_styles.extend(styles)
