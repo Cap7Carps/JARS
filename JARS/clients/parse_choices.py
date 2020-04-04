@@ -12,8 +12,8 @@ class ChoicesClient:
         """
 
         self.config = self.load_config(conf_filepath)
-        self.valid_genres = self.parse_genres_styles(self.config)['genres']
-        self.valid_styles = self.parse_genres_styles(self.config)['styles']
+        self.valid_genres = self._parse_genres_styles_from_config()['genres']
+        self.valid_styles = self._parse_genres_styles_from_config()['styles']
 
     def process_choices(self, raw_choices):
         """
@@ -26,7 +26,7 @@ class ChoicesClient:
 
         cleaned_choices.update(cleaned_genres_styles)
 
-        return self.cleaned_choices
+        return cleaned_choices
 
     def map_choice_genre_style(self, raw_genre_choices):
         """
@@ -66,7 +66,7 @@ class ChoicesClient:
 
         return {'genres': valid_genres, 'styles': valid_styles}
 
-    @staticmethod
+    @staticmethod  #TODO: Move this to a configuration loader class
     def load_config(full_conf_filepath):
         with open(full_conf_filepath, 'rt') as file_obj:
             conf = yaml.safe_load(file_obj.read())

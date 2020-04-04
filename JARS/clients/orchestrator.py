@@ -1,4 +1,5 @@
-from parse_choices import ChoicesClient
+from JARS.clients.parse_choices import ChoicesClient
+from JARS.clients.discogs import JARSDiscogsClient
 
 import os
 
@@ -10,16 +11,16 @@ class Orchestrator:
         MODULE_PATH = os.path.dirname(os.path.abspath(__file__))
         DISCOGS_CONF_FILE_NAME = os.path.join(MODULE_PATH, os.pardir, 'conf', 'discogs.yml')
 
-        self.raw_choices = raw_choices
         self.clean_choices = ChoicesClient(DISCOGS_CONF_FILE_NAME).process_choices(raw_choices)
 
     def run(self):
-        pass
+        discogs_client = JARSDiscogsClient(self.clean_choices)
+        discogs_results = discogs_client.query_database()
 
-    def prepare_query(self):
-        pass
+        desired_size = 10
+        playlist = []
 
-    def retrieve_releases(self, query):
-        # Used NamedTuple to create something which you can easily access artist/release from
-        pass
+        while len(playlist) <= desired_size:
+            release = next(discogs_results)
+
 

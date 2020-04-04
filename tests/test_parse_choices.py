@@ -50,13 +50,15 @@ class TestChoicesClient:
 
     def test_parse_genres_styles(self):
 
-        config = {'genres-styles': {'Rock': ['Grunge', 'Punk'], 'Electronic': ['Techno', 'Gabba']}}
-        parsed_config = self.dummy_client._parse_genres_styles(config)
+        self.dummy_client.config = {'genres-styles': {'Rock': ['Grunge', 'Punk'], 'Electronic': ['Techno', 'Gabba']}}
+        parsed_config = self.dummy_client._parse_genres_styles_from_config()
         expected = {'genres': ['Rock', 'Electronic'], 'styles': ['Grunge', 'Punk', 'Techno', 'Gabba']}
 
         assert parsed_config == expected
 
-    def test_map_choice_genre_style_valid_choices_no_whitespace(self):
+    def test_map_choice_genre_style(self):
+
+    # VALID NO SPACE
 
         self.dummy_client.valid_genres = ['Rock', 'Folk', 'Rap']
         self.dummy_client.valid_styles = ['Drone', 'Drill', 'K-pop']
@@ -67,10 +69,7 @@ class TestChoicesClient:
 
         assert expected_result == result
 
-    def test_map_choice_genre_style_valid_choices_WITH_whitespace(self):
-
-        self.dummy_client.valid_genres = ['Rock', 'Folk', 'Rap']
-        self.dummy_client.valid_styles = ['Drone', 'Drill', 'K-pop']
+    # WITH WHITESPACE
 
         raw_choices = 'drone,  rap,  k-pop'
         expected_result = {'genre': ['Rap'], 'style': ['Drone', 'K-pop']}
@@ -78,7 +77,7 @@ class TestChoicesClient:
 
         assert expected_result == result
 
-    def test_map_choice_genre_style_invalid_choices(self):
+    # UNMATCHED VALUES
 
         self.dummy_client.valid_genres = ['Rock', 'Folk', 'Rap']
         self.dummy_client.valid_styles = ['Drone', 'Drill', 'K-pop']
