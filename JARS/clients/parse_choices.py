@@ -23,9 +23,11 @@ class ChoicesClient:
 
         cleaned_choices = {}
         cleaned_genres_styles = self.map_choice_genre_style(raw_choices[GENRE])
-
         cleaned_choices.update(cleaned_genres_styles)
 
+        cleaned_choices = self.prepare_for_discogs_api(cleaned_choices)
+
+        cleaned_choices['type'] = 'release'
         return cleaned_choices
 
     def map_choice_genre_style(self, raw_genre_choices):
@@ -50,6 +52,18 @@ class ChoicesClient:
                 mapped_choices['unmatched'].append(cleaned_choice)
 
         return mapped_choices
+
+    def prepare_for_discogs_api(self, choices_dict):
+        """
+        :param choices_dict: Dictionary of form: {'choice': ['list', 'of', 'choices']}
+        :return: Dictionary of form: {'choice': 'list of choices'}
+        """
+        for choice, selections in choices_dict.items():
+            if selections:
+                choices_dict[choice] = ' '.join(choices_dict[choice])
+
+        return choices_dict
+
 
     def _parse_genres_styles_from_config(self):
         """

@@ -16,11 +16,14 @@ class Orchestrator:
     def run(self):
         discogs_client = JARSDiscogsClient(self.clean_choices)
         discogs_results = discogs_client.query_database()
+        iterator_results = iter(discogs_results)
 
         desired_size = 10
         playlist = []
 
         while len(playlist) <= desired_size:
-            release = next(discogs_results)
+            release = next(iterator_results)
+            print(release)
+            playlist.append(release)
 
 
